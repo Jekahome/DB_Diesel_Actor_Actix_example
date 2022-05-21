@@ -1,0 +1,6 @@
+-- Your SQL goes here
+CREATE TABLE IF NOT EXISTS user_sports(
+    id_user SERIAL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
+    id_sport SERIAL REFERENCES sports ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id_user, id_sport) 
+);
