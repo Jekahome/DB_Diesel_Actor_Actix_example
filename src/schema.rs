@@ -1,34 +1,10 @@
- 
- 
-use diesel::sql_types::*;
-use custom_sql_types::Id;
-
-// Custom types
-pub mod custom_sql_types {
-    #[derive(diesel::sql_types::SqlType)]
-    #[diesel(postgres_type(name = "Id"))]
-    pub struct Id(i32);
-
-   impl diesel::query_builder::QueryId for Id{
-    type QueryId = i32;
-    const HAS_STATIC_QUERY_ID: bool = true;
-     
-    /*fn query_id() -> Option<std::any::TypeId> {
-        if Self::HAS_STATIC_QUERY_ID {
-            Some(std::any::TypeId::of::<Self::QueryId>())
-        } else {
-            None
-        }
-    }*/
-   }
-   impl diesel::sql_types::SqlOrd for Id {}
-}
+ use diesel::sql_types::*;
 
 table! {
     use super::*;
     cars (id) {
-        id -> Id,
-        id_user -> Id,
+        id -> Int4,
+        id_user -> Int4,
         car -> Text,
         description -> Nullable<Text>,
         create_at -> Nullable<Timestamp>,
@@ -38,8 +14,8 @@ table! {
 table! {
     use super::*;
     posts (id) {
-        id -> Id,
-        id_user -> Id,
+        id -> Int4,
+        id_user -> Int4,
         title -> Text,
         create_at -> Nullable<Timestamp>,
     }
@@ -48,7 +24,7 @@ table! {
 table! {
     use super::*;
     sports (id) {
-        id -> Id,
+        id -> Int4,
         name -> Varchar,
     }
 }
@@ -56,15 +32,15 @@ table! {
 table! {
     use super::*;
     user_sports (id_user, id_sport) {
-        id_user -> Id,
-        id_sport -> Id,
+        id_user -> Int4,
+        id_sport -> Int4,
     }
 }
 
 table! {
     use super::*;
     users (id) {
-        id -> Id,
+        id -> Int4,
         name -> Varchar,
         email -> Varchar,
         age -> Int4,

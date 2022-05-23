@@ -5,12 +5,12 @@ use diesel::pg::{Pg, PgValue};
 use diesel::serialize::{self, IsNull, Output, ToSql};
 use diesel::deserialize::{self, FromSql, FromSqlRow};
 // use diesel::pg::data_types::{PgMoney,Cents}; error: Deserialize is not implemented PgMoney
-use diesel::sql_types::{Varchar,Integer}; 
+use diesel::sql_types::{Varchar,Integer,Int4}; 
 use std::io::Write;
 use serde::{Deserialize, Serialize};
 //use crate::schema::users::*;
 use crate::schema::{users,posts,cars,user_sports,sports}; 
-use crate::schema::custom_sql_types;
+ 
 
 // Option<> если поле может быть NULL(в schema Nullable) или имеет DEFAULT
 // Для полей допускающих NULL добавить  #[diesel(treat_none_as_null = true)]
@@ -21,7 +21,7 @@ use crate::schema::custom_sql_types;
 #[diesel(treat_none_as_null = true)]
 #[diesel(table_name = users)]
 pub struct User {
-    #[diesel(sql_type = custom_sql_types::Id)]
+    #[diesel(sql_type = Int4)]
     pub id: my_type_safety::Id,
     #[diesel(sql_type = Varchar)]
     pub name: String,
@@ -57,16 +57,16 @@ pub struct NewUser<'a> {
 pub mod my_type_safety{
     use super::*;
     #[derive(Debug, AsExpression, FromSqlRow,Clone,Copy, Deserialize, Serialize, Hash, Eq, PartialEq)]
-    #[diesel(sql_type = custom_sql_types::Id)]
+    #[diesel(sql_type = Int4)]
     pub struct Id(pub i32);
 
-    impl FromSql<custom_sql_types::Id, Pg> for Id {
+    impl FromSql<Int4, Pg> for Id {
         fn from_sql(bytes: PgValue<'_>) -> deserialize::Result<Self> {
             FromSql::<Integer, Pg>::from_sql(bytes).map(Id)
         }
     }
 
-    impl ToSql<custom_sql_types::Id, Pg> for Id {
+    impl ToSql<Int4, Pg> for Id {
         fn to_sql<'b>(&'b self, out: &mut Output<'b, '_, Pg>) -> serialize::Result {
             ToSql::<Integer, Pg>::to_sql(&self.0, out)
         }
@@ -79,9 +79,9 @@ pub mod my_type_safety{
 #[diesel(table_name = posts)]
 #[diesel(belongs_to(User, foreign_key = id_user))]
 pub struct Post {
-    #[diesel(sql_type = custom_sql_types::Id)]
+    #[diesel(sql_type = Int4)]
     pub id: my_type_safety::Id,
-    #[diesel(sql_type = custom_sql_types::Id)]
+    #[diesel(sql_type = Int4)]
     pub id_user: my_type_safety::Id,
     #[diesel(sql_type = Varchar)]
     pub title: String,
@@ -93,9 +93,9 @@ pub struct Post {
 #[diesel(table_name = cars)]
 #[diesel(belongs_to(User, foreign_key = id_user))]
 pub struct Car {
-    #[diesel(sql_type = custom_sql_types::Id)]
+    #[diesel(sql_type = Int4)]
     pub id: my_type_safety::Id,
-    #[diesel(sql_type = custom_sql_types::Id)]
+    #[diesel(sql_type = Int4)]
     pub id_user: my_type_safety::Id,
     #[diesel(sql_type = Varchar)]
     pub car: String,
@@ -108,7 +108,7 @@ pub struct Car {
 #[diesel(primary_key(id))]
 #[diesel(table_name = sports)]
 pub struct Sport {
-    #[diesel(sql_type = custom_sql_types::Id)]
+    #[diesel(sql_type = Int4)]
     pub id: my_type_safety::Id,
     #[diesel(sql_type = Text)]
     pub name: String  
@@ -120,9 +120,9 @@ pub struct Sport {
 #[diesel(belongs_to(User, foreign_key = id_user))]
 #[diesel(belongs_to(Sport, foreign_key = id_sport))]
 pub struct UserSports {
-    #[diesel(sql_type = custom_sql_types::Id)]
+    #[diesel(sql_type = Int4)]
     pub id_user: my_type_safety::Id,
-    #[diesel(sql_type = custom_sql_types::Id)]
+    #[diesel(sql_type = Int4)]
     pub id_sport: my_type_safety::Id 
 }
 

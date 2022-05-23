@@ -313,6 +313,20 @@ async fn dml_select(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpR
     let res_users:Vec<models::User> = usr_list.await??;
     //let res_users:String = serde_json::to_string(&users).unwrap();
     
+    {
+        let user:serde_json::Value = serde_json::json!({
+            "id":models::my_type_safety::Id(1),
+            "name": "full_name".to_string(),
+            "email": "email@com".to_string(),
+            "age": 18,
+            "obj": "{}",
+            "create_at":None::<chrono::NaiveDateTime>
+        });
+        let user: models::User = serde_json::from_value(user).unwrap();
+        println!("{:?}",user);
+        println!("{:?}",serde_json::to_string(&user).unwrap());
+    }
+
      Ok( 
      HttpResponse::Ok()
         .content_type(actix_web::http::header::ContentType::json())
